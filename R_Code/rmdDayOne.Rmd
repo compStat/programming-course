@@ -83,7 +83,7 @@ tail(df, 1:3)
 
 ## Missing Arguments
 
-```{r}
+```{r, error=TRUE}
 someFunction <- function(a, b) {
   cat(a, "\n")
   cat(b)
@@ -198,5 +198,330 @@ mynrow(df)
 ```
 
 
+# Control Structures
+
+  - **if, else:** testing a condition
+  - **for:** execute a loop a fixed number of times
+  - **while:** execute a loop while a condition is true
+  - **repeat:** execute an infinite loop
+  - **break:** break the execution of a loop
+  - **next:** break the execution of a loop
 
 
+## if, else
+
+```{r, eval = FALSE}
+
+if (condition) {
+  ## do something
+} else {
+  ## do something else
+}
+
+```
+
+```{r, error=TRUE}
+
+sqrtOwn <- function(x){
+  
+  # does the input correspond with expectations
+  if (x < 0) {
+    stop("'sqrtOwn' can't handle negative values")
+    
+  } else {
+    sqrt(x)
+  }
+}
+  
+sqrtOwn(16)
+sqrtOwn(-4)
+
+sqrtOwn(-3:1)
+
+-3:1 < 0
+```
+
+
+```{r, eval = FALSE}
+# or 
+if (condition1) {
+  ## do something
+} else if (condition2) {
+  ## do something different
+} else {
+  ## do something even more different
+}
+```
+
+
+## for
+
+```{r}
+for(i in 1:5){
+  
+  print(i)
+  
+}
+```
+
+```{r}
+x <- c("a", "b", "c", "d", "e")
+
+for(i in 1:length(x)){  # index vector of corresponding length
+  print(x[i])
+}
+
+
+for(element in x){ # element directly taken from vector
+  print(element)
+}
+
+```
+
+
+```{r}
+data(iris)
+
+for(column in iris){
+  str(column)
+}
+```
+
+
+### nested for-loops
+
+```{r}
+matA <- matrix(1:6, nrow = 2)
+
+for(row in 1:nrow(matA)){
+  for(col in 1:ncol(matA)){
+    print(matA[row, col])
+  }
+}
+
+```
+
+
+### loops are suitable for iterative programming
+```{r}
+loopObject <- NULL
+
+for(i in 1:10){
+  loopObject <- c(loopObject, i^2)
+}
+
+```
+
+
+## while 
+
+```{r, eval = FALSE}
+number <- 0
+
+while(condition is true){
+  # do something
+}
+
+```
+
+
+```{r}
+pos <- 0
+step <- -1
+
+while (pos >= -3 && pos <= 5) {
+  
+  cat("Step =", step <- step + 1, "\n")
+  cat("Position =", pos, "\n")
+  coin <- rbinom(n = 1, size = 1, prob = 0.5)
+  if (coin == 1) { ## random walk
+    pos <- pos + 1
+  } else {
+    pos <- pos - 1
+  }
+  
+  if(step > 10) {
+    warning("maximum amount of iterations")
+    break
+  }
+  
+}
+```
+
+```{r}
+x <- "a"
+
+is.numeric(x) && sqrt(x) > 2
+is.character(x) || sqrt(x) > 2
+
+```
+
+## repeat
+
+```{r, eval = FALSE}
+
+repeat {
+  
+  # do something within every looping
+  
+  # quit loop, if
+  if(condition1) break
+  
+}
+
+```
+
+# *apply Functions
+
+## apply
+
+```{r}
+matB <- matrix(c(rnorm(199), NA), nrow = 20, ncol = 10)
+
+apply(matB, MARGIN = 2, mean, na.rm = TRUE)
+apply(matB, MARGIN = 1, sd)
+
+apply(matB, MARGIN = 2, FUN = function(x) x[1])
+matB[1, ]
+
+```
+
+works also for `data.frames`
+
+```{r}
+apply(iris[-5], 1, mean)
+```
+
+
+```{r}
+# rowMeans, colMeans
+# rowSums, colSums
+
+colMeans(iris[-5])
+
+
+```
+
+
+## lapply
+
+```{r, error = TRUE}
+aList <- list(a = c(1:5, NA),
+              b = rnorm(10),
+              c = rpois(15,lambda = 3))
+
+mean(aList$a)
+mean(aList$b)
+
+library(parallel)
+mclapply(aList, mean, na.rm = TRUE, mc.cores = length(aList))
+
+# alternative: for-loop
+resList <- list()
+for(elementName in names(aList)){
+  resList[[elementName]] <-mean(aList[[elementName]], 
+                                na.rm = TRUE)
+}
+
+```
+
+
+
+```{r}
+nElements <- 1:4
+
+lapply(nElements, runif, n = 5, min = 0)
+
+lapply(nElements, function(x) runif(n = 5, min = 0, max = x))
+
+
+```
+
+## sapply
+
+```{r}
+library(dplyr)
+names(nElements) <- letters[1:4]
+
+set.seed(1)
+sapply(nElements, 
+         function(x) runif(n = 5, min = 0, max = x),
+         simplify = FALSE)
+
+
+
+```
+
+```{r}
+charElements <- letters[1:5]
+lapply(charElements, function(x) rnorm(1))
+
+sapply(charElements, 
+       function(x) rnorm(1))
+
+# one has more control, if the data structure is
+# generated afterwards with additional commands
+resList <- sapply(charElements, 
+                  function(x) rnorm(1), 
+                  simplify = FALSE)
+
+do.call(cbind, resList) # bind column-wise
+do.call(rbind, resList) # bind row-wise
+
+# # excursus
+# runif(n = 10, min = 0, max = 5)
+# do.call(runif, list(n = 10, 
+#                     min = 0, 
+#                     max = 5))
+
+
+```
+
+
+## mapply
+
+
+```{r}
+grep("a", letters)
+grep("b", letters)
+sapply(letters, function(x) grep(x, letters), simplify = FALSE)
+lapply(letters, function(x) grep(x, letters))
+```
+
+
+```{r}
+
+makeNames <- function(vorname, nachname, ...) {
+  paste(vorname, nachname, ...)
+  }
+
+makeNames("Steffen", "Wagner", sep ="")
+
+mapply(makeNames,
+       nachname = c("Lohmann", "Wagner", "Warnholz"),
+       vorname = c("Dietmar", "Steffen", "Sebastian"),
+       MoreArgs = list(sep = c("_")),
+       SIMPLIFY = FALSE)
+
+```
+
+## split
+
+```{r}
+data(iris)
+
+irisList <- split(iris, f = iris$Species)
+
+lapply(irisList, summary)
+
+lmList <- lapply(irisList, function(dat) lm(Sepal.Length ~ Sepal.Width, dat))
+
+
+lapply(lmList, summary)
+
+sapply(lmList, function(x) summary(x)$adj.r.squared)
+
+```
+
+
+fließtext `r 2+2`
