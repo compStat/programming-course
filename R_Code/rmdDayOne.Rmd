@@ -1,0 +1,96 @@
+---
+title: "rmdDayOne"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+# knitr::opts_chunk$set(eval = FALSE, echo = FALSE)
+```
+
+# Funktionen 
+
+## Gute Funktionen
+
+- Einfach
+- Kurz
+- Abgeschlossen (self-contained)
+
+## Zielsetzung
+
+- Abstraktion
+- Vermeidung von Redundanz
+
+```{r eval = FALSE}
+someFunction <- function(<args>) {
+  <body>
+} 
+```
+
+```{r}
+someFunction <- function(x) {
+  x
+}
+someFunction(1)
+```
+
+## Arguments
+
+```{r}
+args(someFunction)
+formals(someFunction)
+```
+
+
+## Body
+
+```{r}
+body(someFunction)
+```
+
+## Environment
+
+```{r}
+environment(someFunction)
+```
+
+
+## Function arguments
+
+- exact
+- partial
+- positional
+
+```{r}
+mydata <- c(rnorm(100), NA)
+
+sd(mydata, na.rm = TRUE)
+sd(na.rm = TRUE, mydata)
+```
+
+## Defaults
+
+```{r}
+someFunction <- function(x, mul = x) x * mul
+someFunction(3)
+
+tail <- function(df, selection = nrow(df)) df[selection, ] 
+df <- data.frame(x = rnorm(10))
+tail(df)
+tail(df, 1:3)
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
