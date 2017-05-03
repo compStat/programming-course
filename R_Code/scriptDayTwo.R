@@ -37,8 +37,6 @@ mean <- function(x, ...) {
     base::mean(x, ...)
   } else if (is.character(x)) {
     mean(nchar(x), ...)
-  } else if () {
-    
   } else {
     stop("...")
   }
