@@ -67,17 +67,33 @@ mean("a")
 
 ## S3 Classes
 
-rat <- rational(c(1, 2, 2), c(2, 3, 4))
+# see package
 
-2 + rat
+## Debugging
 
-A %*% B
+f <- function(x) {
+  x - g(x)
+}
+g <- function(y) {
+  y * h(y)
+}
+h <- function(z, verbose = TRUE) {
+  if (verbose) futile.logger::flog.info(z)
+  r <- log(abs(z))
+  solve(crossprod(matrix(rnorm(10e6), nrow = 1000, ncol = 1000)))
+  if (verbose) futile.logger::flog.error(r)
+  if (r < 10) r^2
+  else r^3
+}
 
-# method:
-generic.class <- function(x) x
+Rprof(tmp <- tempfile())
+testOut <- f(10)
+Rprof()
+profileSummary <- summaryRprof(tmp)
+unlink(tmp)
 
-# traditional object orientation
-class.method
+profileSummary$by.total
+
 
 
 
