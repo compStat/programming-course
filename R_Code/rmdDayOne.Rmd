@@ -188,6 +188,8 @@ someFunction(1)
 ```
 
 
+## Name Masking
+
 ```{r}
 nrow(df)
 dim <- function(df) 2
